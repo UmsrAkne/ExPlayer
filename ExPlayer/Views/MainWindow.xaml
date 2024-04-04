@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:ExPlayer.Models"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:viewModels="clr-namespace:ExPlayer.ViewModels"
     Title="{Binding Title}"
@@ -14,6 +15,14 @@
     mc:Ignorable="d">
 
     <Grid>
-        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+        <ListView ItemsSource="{Binding FileListViewModel.Files}">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:FileInfoWrapper}">
+                    <Border>
+                        <TextBlock Text="{Binding Name}" />
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Window>

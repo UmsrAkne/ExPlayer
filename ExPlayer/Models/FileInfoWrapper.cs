@@ -5,8 +5,8 @@ namespace ExPlayer.Models
 {
     public class FileInfoWrapper : BindableBase
     {
-        public FileInfo FileInfo { get; init; }
+        public FileSystemInfo FileSystemInfo { get; init; }
 
-        public string Name => FileInfo != null ? FileInfo.Name : string.Empty;
+        public string Name => FileSystemInfo != null ? FileSystemInfo.Name : string.Empty;
     }
 }
