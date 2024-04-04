@@ -5,6 +5,7 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="Prism.DryIoc" Version="8.1.97"/>
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
           <PrivateAssets>all</PrivateAssets>
