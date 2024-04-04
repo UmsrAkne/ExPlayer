@@ -40,9 +40,26 @@ namespace ExPlayer.ViewModels
             MoveDirectory(FileListViewModel.SelectedItem.FileSystemInfo.FullName);
         });
 
+        public DelegateCommand MoveParentDirectoryCommand => new DelegateCommand(() =>
+        {
+            if (string.IsNullOrWhiteSpace(CurrentDirectoryPath))
+            {
+                return;
+            }
+
+            var di = Directory.GetParent(CurrentDirectoryPath);
+            if (di == null)
+            {
+                return;
+            }
+
+            MoveDirectory(di.FullName);
+        });
+
         private void MoveDirectory(string path)
         {
             FileListViewModel.Files.Clear();
+            CurrentDirectoryPath = path;
 
             var files = Directory.GetFiles(path);
             var dirs = Directory.GetDirectories(path);
