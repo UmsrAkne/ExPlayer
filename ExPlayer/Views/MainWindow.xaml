@@ -15,7 +15,17 @@
     mc:Ignorable="d">
 
     <Grid>
-        <ListView ItemsSource="{Binding FileListViewModel.Files}" SelectedItem="{Binding FileListViewModel.SelectedItem}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBox Grid.Row="0" Text="{Binding CurrentDirectoryPath}" />
+
+        <ListView
+            Grid.Row="1"
+            ItemsSource="{Binding FileListViewModel.Files}"
+            SelectedItem="{Binding FileListViewModel.SelectedItem}">
             <ListView.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding FileListViewModel.MoveDirectoryCommand}" />
             </ListView.InputBindings>
