@@ -30,7 +30,7 @@ namespace ExPlayer.ViewModels
 
         public FileListViewModel FileListViewModel { get; set; }
 
-        public DelegateCommand MoveDirectoryCommand => new DelegateCommand(() =>
+        public DelegateCommand OpenCommand => new DelegateCommand(() =>
         {
             if (FileListViewModel.SelectedItem is not { IsDirectory: true, })
             {

@@ -28,7 +28,7 @@
             ItemsSource="{Binding FileListViewModel.Files}"
             SelectedItem="{Binding FileListViewModel.SelectedItem}">
             <ListView.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding MoveDirectoryCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
                 <KeyBinding Key="BackSpace" Command="{Binding MoveParentDirectoryCommand}" />
             </ListView.InputBindings>
 
