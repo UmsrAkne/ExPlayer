@@ -30,14 +30,23 @@ namespace ExPlayer.ViewModels
 
         public FileListViewModel FileListViewModel { get; set; }
 
-        public DelegateCommand MoveDirectoryCommand => new DelegateCommand(() =>
+        public DelegateCommand OpenCommand => new DelegateCommand(() =>
         {
-            if (FileListViewModel.SelectedItem is not { IsDirectory: true, })
+            if (FileListViewModel.SelectedItem == null)
             {
                 return;
             }
 
-            MoveDirectory(FileListViewModel.SelectedItem.FileSystemInfo.FullName);
+            if (FileListViewModel.SelectedItem.IsSoundFile())
+            {
+                FileListViewModel.Play();
+                return;
+            }
+
+            if (FileListViewModel.SelectedItem.IsDirectory)
+            {
+                MoveDirectory(FileListViewModel.SelectedItem.FileSystemInfo.FullName);
+            }
         });
 
         public DelegateCommand MoveParentDirectoryCommand => new DelegateCommand(() =>
