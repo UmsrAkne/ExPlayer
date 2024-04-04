@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using ExPlayer.Models;
 using Prism.Mvvm;
@@ -5,8 +6,10 @@ using Prism.Mvvm;
 namespace ExPlayer.ViewModels
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class FileListViewModel : BindableBase
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+    public class FileListViewModel : BindableBase, IDisposable
     {
+        private readonly AudioPlayer audioPlayer = new ();
         private FileInfoWrapper selectedItem;
 
         public ObservableCollection<FileInfoWrapper> Files { get; init; } = new ();
@@ -15,6 +18,27 @@ namespace ExPlayer.ViewModels
         {
             get => selectedItem;
             set => SetProperty(ref selectedItem, value);
+        }
+
+        public void Play()
+        {
+            if (!SelectedItem.IsSoundFile())
+            {
+                return;
+            }
+
+            audioPlayer.Play(SelectedItem.FileSystemInfo.FullName);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            audioPlayer.Dispose();
         }
     }
 }
