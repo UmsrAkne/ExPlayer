@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using ExPlayer.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace ExPlayer.ViewModels
@@ -10,13 +11,58 @@ namespace ExPlayer.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private string title = "Prism Application";
+        private string currentDirectoryPath;
 
         public MainWindowViewModel()
         {
-            const string path = "C:\\";
+            CurrentDirectoryPath = "C:\\";
+            FileListViewModel = new FileListViewModel();
+            MoveDirectory(CurrentDirectoryPath);
+        }
+
+        public string Title { get => title; set => SetProperty(ref title, value); }
+
+        public string CurrentDirectoryPath
+        {
+            get => currentDirectoryPath;
+            set => SetProperty(ref currentDirectoryPath, value);
+        }
+
+        public FileListViewModel FileListViewModel { get; set; }
+
+        public DelegateCommand MoveDirectoryCommand => new DelegateCommand(() =>
+        {
+            if (FileListViewModel.SelectedItem is not { IsDirectory: true, })
+            {
+                return;
+            }
+
+            MoveDirectory(FileListViewModel.SelectedItem.FileSystemInfo.FullName);
+        });
+
+        public DelegateCommand MoveParentDirectoryCommand => new DelegateCommand(() =>
+        {
+            if (string.IsNullOrWhiteSpace(CurrentDirectoryPath))
+            {
+                return;
+            }
+
+            var di = Directory.GetParent(CurrentDirectoryPath);
+            if (di == null)
+            {
+                return;
+            }
+
+            MoveDirectory(di.FullName);
+        });
+
+        private void MoveDirectory(string path)
+        {
+            FileListViewModel.Files.Clear();
+            CurrentDirectoryPath = path;
+
             var files = Directory.GetFiles(path);
             var dirs = Directory.GetDirectories(path);
-            FileListViewModel = new FileListViewModel();
 
             FileListViewModel.Files.AddRange(
                 files.Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }));
@@ -24,9 +70,5 @@ namespace ExPlayer.ViewModels
             FileListViewModel.Files.AddRange(
                 dirs.Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), }));
         }
-
-        public string Title { get => title; set => SetProperty(ref title, value); }
-
-        public FileListViewModel FileListViewModel { get; set; }
     }
 }
