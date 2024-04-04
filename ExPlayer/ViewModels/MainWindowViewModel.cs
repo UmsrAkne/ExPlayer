@@ -1,8 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using ExPlayer.Models;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 
 namespace ExPlayer.ViewModels
 {
@@ -13,16 +9,8 @@ namespace ExPlayer.ViewModels
 
         public MainWindowViewModel()
         {
-            const string path = "C:\\";
-            var files = Directory.GetFiles(path);
-            var dirs = Directory.GetDirectories(path);
             FileListViewModel = new FileListViewModel();
-
-            FileListViewModel.Files.AddRange(
-                files.Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }));
-
-            FileListViewModel.Files.AddRange(
-                dirs.Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), }));
+            FileListViewModel.MoveDirectory("C:\\");
         }
 
         public string Title { get => title; set => SetProperty(ref title, value); }
