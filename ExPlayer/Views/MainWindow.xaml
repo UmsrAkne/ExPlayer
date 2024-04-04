@@ -16,6 +16,10 @@
 
     <Grid>
         <ListView ItemsSource="{Binding FileListViewModel.Files}" SelectedItem="{Binding FileListViewModel.SelectedItem}">
+            <ListView.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding FileListViewModel.MoveDirectoryCommand}" />
+            </ListView.InputBindings>
+
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:FileInfoWrapper}">
 
