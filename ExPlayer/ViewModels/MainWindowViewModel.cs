@@ -65,6 +65,14 @@ namespace ExPlayer.ViewModels
             MoveDirectory(di.FullName);
         });
 
+        public DelegateCommand JumpToDirectoryCommand => new DelegateCommand(() =>
+        {
+            if (Directory.Exists(CurrentDirectoryPath))
+            {
+                MoveDirectory(CurrentDirectoryPath);
+            }
+        });
+
         private void MoveDirectory(string path)
         {
             FileListViewModel.Files.Clear();
