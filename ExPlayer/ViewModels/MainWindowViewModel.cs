@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using ExPlayer.Models;
 using Prism.Commands;
@@ -65,19 +64,25 @@ namespace ExPlayer.ViewModels
             MoveDirectory(di.FullName);
         });
 
+        public DelegateCommand JumpToDirectoryCommand => new DelegateCommand(() =>
+        {
+            if (Directory.Exists(CurrentDirectoryPath))
+            {
+                MoveDirectory(CurrentDirectoryPath);
+            }
+        });
+
         private void MoveDirectory(string path)
         {
-            FileListViewModel.Files.Clear();
             CurrentDirectoryPath = path;
 
-            var files = Directory.GetFiles(path);
-            var dirs = Directory.GetDirectories(path);
+            var files = Directory.GetFiles(path)
+                .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), });
 
-            FileListViewModel.Files.AddRange(
-                files.Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }));
+            var dirs = Directory.GetDirectories(path)
+                .Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), });
 
-            FileListViewModel.Files.AddRange(
-                dirs.Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), }));
+            FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
         }
     }
 }

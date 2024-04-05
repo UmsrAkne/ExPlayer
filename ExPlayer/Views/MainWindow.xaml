@@ -17,14 +17,37 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <!--  メニュバーとパスバーを含むスタックパネル  -->
             <RowDefinition Height="Auto" />
+
+            <!--  ListView  -->
             <RowDefinition />
+
+            <!--  操作UI  -->
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBox Grid.Row="0" Text="{Binding CurrentDirectoryPath}" />
+        <!--  最上部メニュー  -->
+        <StackPanel Grid.Row="0">
+            <Menu>
+                <MenuItem Header="表示">
+                    <MenuItem
+                        Header="不要なファイルも表示"
+                        IsCheckable="True"
+                        IsChecked="{Binding FileListViewModel.IncludeAllFiles}" />
+                </MenuItem>
+            </Menu>
+
+            <TextBox Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding JumpToDirectoryCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </StackPanel>
 
         <ListView
             Grid.Row="1"
+            HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding FileListViewModel.Files}"
             SelectedItem="{Binding FileListViewModel.SelectedItem}">
             <ListView.InputBindings>
@@ -40,6 +63,10 @@
                 <DataTemplate DataType="{x:Type models:FileInfoWrapper}">
 
                     <Border>
+                        <Border.InputBindings>
+                            <MouseBinding Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=ListView}}" MouseAction="LeftDoubleClick" />
+                        </Border.InputBindings>
+
                         <TextBlock Text="{Binding Name}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -55,5 +82,53 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <StackPanel Grid.Row="2" Margin="2">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style x:Key="ControlButtonStyle" TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+
+                                    <Border
+                                        x:Name="border"
+                                        Padding="8,2"
+                                        Background="WhiteSmoke"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="4">
+                                        <ContentPresenter />
+
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <!--  マウスオーバー時のトリガー  -->
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="LightBlue" />
+                                        </Trigger>
+
+                                        <!--  押下時のトリガー  -->
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="DeepSkyBlue" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </StackPanel.Resources>
+
+                <Button Content="Play" Style="{StaticResource ControlButtonStyle}" />
+                <Border Margin="4,0" />
+
+                <Button
+                    Command="{Binding FileListViewModel.StopCommand}"
+                    Content="Stop"
+                    Style="{StaticResource ControlButtonStyle}" />
+            </StackPanel>
+
+        </StackPanel>
     </Grid>
 </Window>
