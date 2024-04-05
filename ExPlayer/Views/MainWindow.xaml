@@ -17,8 +17,14 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <!--  パスバー  -->
             <RowDefinition Height="Auto" />
+
+            <!--  ListView  -->
             <RowDefinition />
+
+            <!--  操作UI  -->
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <TextBox Grid.Row="0" Text="{Binding CurrentDirectoryPath}" />
@@ -60,5 +66,53 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <StackPanel Grid.Row="2" Margin="2">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style x:Key="ControlButtonStyle" TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+
+                                    <Border
+                                        x:Name="border"
+                                        Padding="8,2"
+                                        Background="WhiteSmoke"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="4">
+                                        <ContentPresenter />
+
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <!--  マウスオーバー時のトリガー  -->
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="LightBlue" />
+                                        </Trigger>
+
+                                        <!--  押下時のトリガー  -->
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="DeepSkyBlue" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </StackPanel.Resources>
+
+                <Button Content="Play" Style="{StaticResource ControlButtonStyle}" />
+                <Border Margin="4,0" />
+
+                <Button
+                    Command="{Binding FileListViewModel.StopCommand}"
+                    Content="Stop"
+                    Style="{StaticResource ControlButtonStyle}" />
+            </StackPanel>
+
+        </StackPanel>
     </Grid>
 </Window>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using ExPlayer.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace ExPlayer.ViewModels
@@ -19,6 +20,11 @@ namespace ExPlayer.ViewModels
             get => selectedItem;
             set => SetProperty(ref selectedItem, value);
         }
+
+        public DelegateCommand StopCommand => new (() =>
+        {
+            audioPlayer.Stop();
+        });
 
         public void Play()
         {

@@ -15,6 +15,11 @@ namespace ExPlayer.Models
             waveOut.Play();
         }
 
+        public void Stop()
+        {
+            waveOut.Stop();
+        }
+
         public void Dispose()
         {
             Dispose(true);
