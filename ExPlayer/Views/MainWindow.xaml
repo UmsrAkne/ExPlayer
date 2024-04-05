@@ -25,6 +25,7 @@
 
         <ListView
             Grid.Row="1"
+            HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding FileListViewModel.Files}"
             SelectedItem="{Binding FileListViewModel.SelectedItem}">
             <ListView.InputBindings>
@@ -40,6 +41,10 @@
                 <DataTemplate DataType="{x:Type models:FileInfoWrapper}">
 
                     <Border>
+                        <Border.InputBindings>
+                            <MouseBinding Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=ListView}}" MouseAction="LeftDoubleClick" />
+                        </Border.InputBindings>
+
                         <TextBlock Text="{Binding Name}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
