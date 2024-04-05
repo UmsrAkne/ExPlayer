@@ -17,7 +17,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <!--  パスバー  -->
+            <!--  メニュバーとパスバーを含むスタックパネル  -->
             <RowDefinition Height="Auto" />
 
             <!--  ListView  -->
@@ -27,11 +27,23 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBox Grid.Row="0" Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding JumpToDirectoryCommand}" />
-            </TextBox.InputBindings>
-        </TextBox>
+        <!--  最上部メニュー  -->
+        <StackPanel Grid.Row="0">
+            <Menu>
+                <MenuItem Header="表示">
+                    <MenuItem
+                        Header="不要なファイルも表示"
+                        IsCheckable="True"
+                        IsChecked="{Binding FileListViewModel.IncludeAllFiles}" />
+                </MenuItem>
+            </Menu>
+
+            <TextBox Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding JumpToDirectoryCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </StackPanel>
 
         <ListView
             Grid.Row="1"
