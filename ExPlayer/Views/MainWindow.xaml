@@ -27,7 +27,11 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBox Grid.Row="0" Text="{Binding CurrentDirectoryPath}" />
+        <TextBox Grid.Row="0" Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding JumpToDirectoryCommand}" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <ListView
             Grid.Row="1"
