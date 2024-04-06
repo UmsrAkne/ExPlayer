@@ -9,6 +9,9 @@ namespace ExPlayer.Models
     {
         private readonly WaveOutEvent waveOut = new ();
         private IWaveProvider reader;
+        private bool waveOutEventIsEnabled;
+
+        public long Position => waveOutEventIsEnabled ? waveOut.GetPosition() : 0;
 
         public void Play(string audioFilePath)
         {
@@ -26,6 +29,7 @@ namespace ExPlayer.Models
                 return;
             }
 
+            waveOutEventIsEnabled = true;
             waveOut.Init(reader);
             waveOut.Play();
         }
@@ -33,6 +37,7 @@ namespace ExPlayer.Models
         public void Stop()
         {
             waveOut.Stop();
+            waveOutEventIsEnabled = false;
         }
 
         public void Dispose()
