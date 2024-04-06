@@ -37,6 +37,8 @@ namespace ExPlayer.ViewModels
             audioPlayer.Stop();
         });
 
+        public long Position => audioPlayer.Position;
+
         /// <summary>
         /// Files のリストを、入力したリストに置き換えます。
         /// IncludeAllFiles == true の場合、不要なファイルはリストから除外されます。

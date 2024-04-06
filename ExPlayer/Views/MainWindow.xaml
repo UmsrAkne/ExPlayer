@@ -129,6 +129,8 @@
                     Style="{StaticResource ControlButtonStyle}" />
             </StackPanel>
 
+            <Slider Margin="3" Value="{Binding PlaybackPosition}" />
+
         </StackPanel>
     </Grid>
 </Window>
