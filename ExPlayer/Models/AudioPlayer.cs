@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using NAudio.Vorbis;
 using NAudio.Wave;
 
 namespace ExPlayer.Models
@@ -10,7 +12,20 @@ namespace ExPlayer.Models
 
         public void Play(string audioFilePath)
         {
-            reader = new Mp3FileReader(audioFilePath);
+            reader = new FileInfo(audioFilePath).Extension switch
+            {
+                ".mp3" => new Mp3FileReader(audioFilePath),
+                ".ogg" => new VorbisWaveReader(audioFilePath),
+                ".wav" => new WaveFileReader(audioFilePath),
+                _ => null,
+            };
+
+            if (reader == null)
+            {
+                // 入力されたファイルが非対応の拡張子だった場合
+                return;
+            }
+
             waveOut.Init(reader);
             waveOut.Play();
         }
