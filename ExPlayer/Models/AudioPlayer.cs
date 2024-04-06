@@ -6,6 +6,7 @@ using NAudio.Wave;
 
 namespace ExPlayer.Models
 {
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class AudioPlayer : IDisposable
     {
         private readonly WaveOutEvent waveOut = new ();
