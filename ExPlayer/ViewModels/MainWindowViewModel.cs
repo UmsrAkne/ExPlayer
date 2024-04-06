@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Windows.Threading;
 using ExPlayer.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -9,6 +11,7 @@ namespace ExPlayer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MainWindowViewModel : BindableBase
     {
+        private readonly DispatcherTimer timer;
         private string title = "Prism Application";
         private string currentDirectoryPath;
 
@@ -17,6 +20,21 @@ namespace ExPlayer.ViewModels
             CurrentDirectoryPath = "C:\\";
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
+
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(200),
+            };
+
+            timer.Tick += (_, _) =>
+            {
+                PlaybackPosition = FileListViewModel.Position;
+                AudioLength = FileListViewModel.AudioLength;
+                RaisePropertyChanged(nameof(PlaybackPosition));
+                RaisePropertyChanged(nameof(AudioLength));
+            };
+
+            timer.Start();
         }
 
         public string Title { get => title; set => SetProperty(ref title, value); }
@@ -26,6 +44,10 @@ namespace ExPlayer.ViewModels
             get => currentDirectoryPath;
             set => SetProperty(ref currentDirectoryPath, value);
         }
+
+        public long PlaybackPosition { get; set; }
+
+        public long AudioLength { get; set; }
 
         public FileListViewModel FileListViewModel { get; set; }
 
