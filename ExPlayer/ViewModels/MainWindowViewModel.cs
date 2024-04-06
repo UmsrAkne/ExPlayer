@@ -29,7 +29,9 @@ namespace ExPlayer.ViewModels
             timer.Tick += (_, _) =>
             {
                 PlaybackPosition = FileListViewModel.Position;
+                AudioLength = FileListViewModel.AudioLength;
                 RaisePropertyChanged(nameof(PlaybackPosition));
+                RaisePropertyChanged(nameof(AudioLength));
             };
 
             timer.Start();
@@ -44,6 +46,8 @@ namespace ExPlayer.ViewModels
         }
 
         public long PlaybackPosition { get; set; }
+
+        public long AudioLength { get; set; }
 
         public FileListViewModel FileListViewModel { get; set; }
 

@@ -129,7 +129,10 @@
                     Style="{StaticResource ControlButtonStyle}" />
             </StackPanel>
 
-            <Slider Margin="3" Value="{Binding PlaybackPosition}" />
+            <Slider
+                Margin="3"
+                Maximum="{Binding AudioLength}"
+                Value="{Binding PlaybackPosition}" />
 
         </StackPanel>
     </Grid>
