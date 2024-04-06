@@ -12,7 +12,7 @@ namespace ExPlayer.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private readonly DispatcherTimer timer;
-        private string title = "Prism Application";
+        private string title = "ExPlayer";
         private string currentDirectoryPath;
 
         public MainWindowViewModel()
