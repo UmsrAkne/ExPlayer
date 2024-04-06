@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using NAudio.Utils;
 using NAudio.Vorbis;
 using NAudio.Wave;
 
@@ -9,16 +10,36 @@ namespace ExPlayer.Models
     {
         private readonly WaveOutEvent waveOut = new ();
         private IWaveProvider reader;
+        private bool waveOutEventIsEnabled;
+
+        public long Position => waveOutEventIsEnabled ? (long)waveOut.GetPositionTimeSpan().TotalSeconds : 0;
+
+        public long Length { get; private set; }
 
         public void Play(string audioFilePath)
         {
-            reader = new FileInfo(audioFilePath).Extension switch
+            if (new FileInfo(audioFilePath).Extension == ".mp3")
             {
-                ".mp3" => new Mp3FileReader(audioFilePath),
-                ".ogg" => new VorbisWaveReader(audioFilePath),
-                ".wav" => new WaveFileReader(audioFilePath),
-                _ => null,
-            };
+                var m = new Mp3FileReader(audioFilePath);
+                Length = (long)m.TotalTime.TotalSeconds;
+                reader = m;
+            }
+            else if (new FileInfo(audioFilePath).Extension == ".ogg")
+            {
+                var v = new VorbisWaveReader(audioFilePath);
+                Length = (long)v.TotalTime.TotalSeconds;
+                reader = v;
+            }
+            else if (new FileInfo(audioFilePath).Extension == ".wav")
+            {
+                var w = new WaveFileReader(audioFilePath);
+                Length = (long)w.TotalTime.TotalSeconds;
+                reader = w;
+            }
+            else
+            {
+                reader = null;
+            }
 
             if (reader == null)
             {
@@ -26,6 +47,7 @@ namespace ExPlayer.Models
                 return;
             }
 
+            waveOutEventIsEnabled = true;
             waveOut.Init(reader);
             waveOut.Play();
         }
@@ -33,6 +55,7 @@ namespace ExPlayer.Models
         public void Stop()
         {
             waveOut.Stop();
+            waveOutEventIsEnabled = false;
         }
 
         public void Dispose()
