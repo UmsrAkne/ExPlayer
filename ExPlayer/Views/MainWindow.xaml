@@ -124,7 +124,7 @@
                 <Border Margin="4,0" />
 
                 <Button
-                    Command="{Binding FileListViewModel.StopCommand}"
+                    Command="{Binding StopCommand}"
                     Content="Stop"
                     Style="{StaticResource ControlButtonStyle}" />
             </StackPanel>
