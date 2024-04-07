@@ -28,8 +28,8 @@ namespace ExPlayer.ViewModels
 
             timer.Tick += (_, _) =>
             {
-                PlaybackPosition = FileListViewModel.Position;
-                AudioLength = FileListViewModel.AudioLength;
+                PlaybackPosition = AudioPlayer.Position;
+                AudioLength = AudioPlayer.Length;
                 RaisePropertyChanged(nameof(PlaybackPosition));
                 RaisePropertyChanged(nameof(AudioLength));
             };
@@ -60,7 +60,7 @@ namespace ExPlayer.ViewModels
 
             if (FileListViewModel.SelectedItem.IsSoundFile())
             {
-                FileListViewModel.Play();
+                Play();
                 return;
             }
 
@@ -93,6 +93,23 @@ namespace ExPlayer.ViewModels
                 MoveDirectory(CurrentDirectoryPath);
             }
         });
+
+        public DelegateCommand StopCommand => new (() =>
+        {
+            AudioPlayer.Stop();
+        });
+
+        private AudioPlayer AudioPlayer { get; set; } = new ();
+
+        private void Play()
+        {
+            if (!FileListViewModel.SelectedItem.IsSoundFile())
+            {
+                return;
+            }
+
+            AudioPlayer.Play(FileListViewModel.SelectedItem.FileSystemInfo.FullName);
+        }
 
         private void MoveDirectory(string path)
         {
