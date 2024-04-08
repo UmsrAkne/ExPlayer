@@ -12,6 +12,7 @@ namespace ExPlayer.Models
         private readonly WaveOutEvent waveOut = new ();
         private IWaveProvider reader;
         private bool waveOutEventIsEnabled;
+        private string currentFileExtension = string.Empty;
 
         public long Position => waveOutEventIsEnabled ? (long)waveOut.GetPositionTimeSpan().TotalSeconds : 0;
 
@@ -48,6 +49,7 @@ namespace ExPlayer.Models
                 return;
             }
 
+            currentFileExtension = new FileInfo(audioFilePath).Extension;
             waveOutEventIsEnabled = true;
             waveOut.Init(reader);
             waveOut.Play();
@@ -62,6 +64,33 @@ namespace ExPlayer.Models
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        public void Seek(long positionSeconds)
+        {
+            switch (currentFileExtension)
+            {
+                case ".mp3":
+                    ((Mp3FileReader)reader).CurrentTime = TimeSpan.FromSeconds(positionSeconds);
+                    break;
+                case ".ogg":
+                    ((VorbisWaveReader)reader).CurrentTime = TimeSpan.FromSeconds(positionSeconds);
+                    break;
+                case ".wav":
+                    ((WaveFileReader)reader).CurrentTime = TimeSpan.FromSeconds(positionSeconds);
+                    break;
+            }
+        }
+
+        public int GetCurrentTime()
+        {
+            return currentFileExtension switch
+            {
+                ".mp3" => (int)((Mp3FileReader)reader).CurrentTime.TotalSeconds,
+                ".ogg" => (int)((VorbisWaveReader)reader).CurrentTime.TotalSeconds,
+                ".wav" => (int)((WaveFileReader)reader).CurrentTime.TotalSeconds,
+                _ => 0,
+            };
         }
 
         protected virtual void Dispose(bool disposing)

@@ -132,6 +132,7 @@
             <Slider
                 Margin="3"
                 Maximum="{Binding AudioLength}"
+                TickFrequency="1"
                 Value="{Binding PlaybackPosition}" />
 
         </StackPanel>
