@@ -14,6 +14,7 @@ namespace ExPlayer.ViewModels
         private readonly DispatcherTimer timer;
         private string title = "ExPlayer";
         private string currentDirectoryPath;
+        private long playbackPosition;
 
         public MainWindowViewModel()
         {
@@ -28,7 +29,6 @@ namespace ExPlayer.ViewModels
 
             timer.Tick += (_, _) =>
             {
-                PlaybackPosition = AudioPlayer.Position;
                 AudioLength = AudioPlayer.Length;
                 RaisePropertyChanged(nameof(PlaybackPosition));
                 RaisePropertyChanged(nameof(AudioLength));
@@ -45,7 +45,15 @@ namespace ExPlayer.ViewModels
             set => SetProperty(ref currentDirectoryPath, value);
         }
 
-        public long PlaybackPosition { get; set; }
+        public long PlaybackPosition
+        {
+            get => AudioPlayer.GetCurrentTime();
+            set
+            {
+                AudioPlayer.Seek(value);
+                SetProperty(ref playbackPosition, value);
+            }
+        }
 
         public long AudioLength { get; set; }
 
