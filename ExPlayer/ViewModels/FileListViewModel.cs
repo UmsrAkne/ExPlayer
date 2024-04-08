@@ -1,18 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ExPlayer.Models;
-using Prism.Commands;
 using Prism.Mvvm;
 
 namespace ExPlayer.ViewModels
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-    public class FileListViewModel : BindableBase, IDisposable
+    public class FileListViewModel : BindableBase
     {
-        private readonly AudioPlayer audioPlayer = new ();
         private FileInfoWrapper selectedItem;
         private bool includeAllFiles = true;
 
@@ -32,15 +29,6 @@ namespace ExPlayer.ViewModels
         /// </value>
         public bool IncludeAllFiles { get => includeAllFiles; set => SetProperty(ref includeAllFiles, value); }
 
-        public DelegateCommand StopCommand => new (() =>
-        {
-            audioPlayer.Stop();
-        });
-
-        public long Position => audioPlayer.Position;
-
-        public long AudioLength => audioPlayer.Length;
-
         /// <summary>
         /// Files のリストを、入力したリストに置き換えます。
         /// IncludeAllFiles == true の場合、不要なファイルはリストから除外されます。
@@ -55,27 +43,6 @@ namespace ExPlayer.ViewModels
 
             Files.Clear();
             Files.AddRange(fileInfoWrappers);
-        }
-
-        public void Play()
-        {
-            if (!SelectedItem.IsSoundFile())
-            {
-                return;
-            }
-
-            audioPlayer.Play(SelectedItem.FileSystemInfo.FullName);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            audioPlayer.Dispose();
         }
     }
 }
