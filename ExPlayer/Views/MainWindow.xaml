@@ -74,28 +74,41 @@
                             <MouseBinding Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=ListView}}" MouseAction="LeftDoubleClick" />
                         </Border.InputBindings>
 
-                        <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{Binding Index, Converter={StaticResource NumberFormatConverter}}" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
 
-                            <Border
-                                Width="1"
-                                Margin="3,0"
-                                Background="Black" />
+                                <TextBlock Text="{Binding Index, Converter={StaticResource NumberFormatConverter}}" />
+                                <Border
+                                    Width="1"
+                                    Margin="3,0"
+                                    Background="Black" />
 
-                            <TextBlock Text="{Binding Name}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsDirectory}" Value="True">
-                                                <Setter Property="Foreground" Value="Coral" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                <TextBlock Width="300" Text="{Binding Name}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDirectory}" Value="True">
+                                                    <Setter Property="Foreground" Value="Coral" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
 
-                        </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Border
+                                    Width="1"
+                                    Margin="5,0"
+                                    Background="Black" />
+                                <TextBlock Width="30" Text="{Binding ListenCount}" />
+                            </StackPanel>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
