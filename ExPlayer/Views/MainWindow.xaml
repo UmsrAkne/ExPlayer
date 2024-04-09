@@ -10,8 +10,8 @@
     xmlns:prism="http://prismlibrary.com/"
     xmlns:viewModels="clr-namespace:ExPlayer.ViewModels"
     Title="{Binding Title}"
-    Width="525"
-    Height="350"
+    Width="720"
+    Height="400"
     d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
@@ -25,7 +25,7 @@
             <!--  メニュバーとパスバーを含むスタックパネル  -->
             <RowDefinition Height="Auto" />
 
-            <!--  ListView  -->
+            <!--  FileListView  -->
             <RowDefinition />
 
             <!--  操作UI  -->
@@ -43,13 +43,14 @@
                 </MenuItem>
             </Menu>
 
-            <TextBox Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox Padding="2,1" Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding JumpToDirectoryCommand}" />
                 </TextBox.InputBindings>
             </TextBox>
         </StackPanel>
 
+        <!--  画面中心の ListView  -->
         <ListView
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
@@ -114,6 +115,7 @@
 
         </ListView>
 
+        <!--  操作UI StackPanel  -->
         <StackPanel Grid.Row="2" Margin="2">
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
