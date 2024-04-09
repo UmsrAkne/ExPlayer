@@ -13,4 +13,9 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+    <ItemGroup>
+      <Reference Include="MyLibrary">
+        <HintPath>..\..\MyLibrary\MyLibrary\bin\Debug\net5.0\MyLibrary.dll</HintPath>
+      </Reference>
+    </ItemGroup>
 </Project>
