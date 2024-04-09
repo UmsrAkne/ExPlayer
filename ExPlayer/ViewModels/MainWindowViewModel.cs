@@ -11,6 +11,7 @@ namespace ExPlayer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MainWindowViewModel : BindableBase
     {
+        private readonly DatabaseContext databaseContext;
         private readonly DispatcherTimer timer;
         private string title = "ExPlayer";
         private string currentDirectoryPath;
@@ -18,6 +19,9 @@ namespace ExPlayer.ViewModels
 
         public MainWindowViewModel()
         {
+            databaseContext = new DatabaseContext();
+            databaseContext.Database.EnsureCreated();
+
             CurrentDirectoryPath = "C:\\";
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
@@ -111,12 +115,14 @@ namespace ExPlayer.ViewModels
 
         private void Play()
         {
-            if (!FileListViewModel.SelectedItem.IsSoundFile())
+            var item = FileListViewModel.SelectedItem;
+            if (!item.IsSoundFile())
             {
                 return;
             }
 
-            AudioPlayer.Play(FileListViewModel.SelectedItem.FileSystemInfo.FullName);
+            AudioPlayer.Play(item.FileSystemInfo.FullName);
+            databaseContext.AddListenCount(item);
         }
 
         private void MoveDirectory(string path)
