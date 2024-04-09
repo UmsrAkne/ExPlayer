@@ -36,13 +36,20 @@ namespace ExPlayer.ViewModels
         /// <param name="fileInfoWrappers">FileInfoWrapper のリストを入力します</param>
         public void ReplaceFileInfoWrappers(IEnumerable<FileInfoWrapper> fileInfoWrappers)
         {
+            var list = fileInfoWrappers.ToList();
             if (!IncludeAllFiles)
             {
-                fileInfoWrappers = fileInfoWrappers.Where(f => f.IsDirectory || f.IsSoundFile());
+                list = list.Where(f => f.IsDirectory || f.IsSoundFile()).ToList();
+            }
+
+            for (var i = 0; i < list.Count; i++)
+            {
+                list[i].OriginalIndex = i + 1;
+                list[i].Index = i + 1;
             }
 
             Files.Clear();
-            Files.AddRange(fileInfoWrappers);
+            Files.AddRange(list);
         }
     }
 }
