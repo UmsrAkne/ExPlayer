@@ -43,7 +43,7 @@
                 </MenuItem>
             </Menu>
 
-            <TextBox Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox Padding="2,1" Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding JumpToDirectoryCommand}" />
                 </TextBox.InputBindings>
