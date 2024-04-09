@@ -130,10 +130,32 @@ namespace ExPlayer.ViewModels
             CurrentDirectoryPath = path;
 
             var files = Directory.GetFiles(path)
-                .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), });
+                .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }).ToList();
 
             var dirs = Directory.GetDirectories(path)
                 .Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), });
+
+            // 視聴回数を入力する処理
+            // 作業ディレクトリのファイルリストと、現在のディレクトリパスで検索したファイルリストを辞書化する。
+            // ファイル名をキーにして、２つのリストを結びつけて、 ListenCount を入力する。
+            var listenCountList = databaseContext.ListenHistory.Where(l => l.ParentDirectoryPath == path).ToList();
+
+            var la = files.Where(f => f.IsSoundFile()).ToDictionary(item => item.Name);
+            var lb = listenCountList.ToDictionary(item => item.Name);
+
+            foreach (var item in lb)
+            {
+                if (la.TryGetValue(item.Key, out var itemA))
+                {
+                    itemA.ListenCount = item.Value.ListenCount;
+
+                    // ここで値が見つかった場合、DB 登録済みということなので、リストから消しておく
+                    la.Remove(item.Key);
+                }
+            }
+
+            // la には DB に未登録のファイルが残っている。全て新規登録する。
+            databaseContext.AddRange(la.Values.ToList());
 
             FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
         }
