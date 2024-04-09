@@ -53,6 +53,7 @@
         <ListView
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
+            AlternationCount="2"
             ItemsSource="{Binding FileListViewModel.Files}"
             SelectedItem="{Binding FileListViewModel.SelectedItem}">
             <ListView.InputBindings>
@@ -97,6 +98,20 @@
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="WhiteSmoke" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+
         </ListView>
 
         <StackPanel Grid.Row="2" Margin="2">
