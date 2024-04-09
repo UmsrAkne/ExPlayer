@@ -25,7 +25,7 @@
             <!--  メニュバーとパスバーを含むスタックパネル  -->
             <RowDefinition Height="Auto" />
 
-            <!--  ListView  -->
+            <!--  FileListView  -->
             <RowDefinition />
 
             <!--  操作UI  -->
@@ -50,6 +50,7 @@
             </TextBox>
         </StackPanel>
 
+        <!--  画面中心の ListView  -->
         <ListView
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
@@ -114,6 +115,7 @@
 
         </ListView>
 
+        <!--  操作UI StackPanel  -->
         <StackPanel Grid.Row="2" Margin="2">
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
