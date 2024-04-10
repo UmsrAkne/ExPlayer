@@ -45,5 +45,44 @@ namespace ExPlayerTest.Models
 
             Assert.IsTrue(audioProvider.HasNext());
         }
+
+        [Test]
+        public void GetNextTest_正常系2_ループなし()
+        {
+            var audioProvider = new AudioProvider
+            {
+                FileInfoWrappers = new List<FileInfoWrapper>()
+                {
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("a.mp3"), },
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("b.mp3"), },
+                },
+            };
+
+            Assert.AreEqual("a.mp3",audioProvider.GetNext().Name);
+            Assert.AreEqual("b.mp3",audioProvider.GetNext().Name);
+            Assert.Null(audioProvider.GetNext());
+        }
+
+        [Test]
+        public void GetNextTest_正常系2_ループ()
+        {
+            var audioProvider = new AudioProvider
+            {
+                Loop = true,
+                FileInfoWrappers = new List<FileInfoWrapper>()
+                {
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("a.mp3"), },
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("b.mp3"), },
+                },
+            };
+
+            Assert.AreEqual("a.mp3",audioProvider.GetNext().Name);
+            Assert.AreEqual("b.mp3",audioProvider.GetNext().Name);
+
+            Assert.AreEqual("a.mp3",audioProvider.GetNext().Name);
+            Assert.AreEqual("b.mp3",audioProvider.GetNext().Name);
+
+            Assert.AreEqual("a.mp3",audioProvider.GetNext().Name);
+        }
     }
 }

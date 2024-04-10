@@ -34,7 +34,24 @@ namespace ExPlayer.Models
 
         public FileInfoWrapper GetNext()
         {
-            return null;
+            if (!HasNext())
+            {
+                return null;
+            }
+
+            if (Index >= FileInfoWrappers.Count - 1)
+            {
+                Index = -1;
+            }
+
+            if (FirstCall)
+            {
+                FirstCall = false;
+                return FileInfoWrappers[Index];
+            }
+
+            Index++;
+            return FileInfoWrappers[Index];
         }
     }
 }
