@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExPlayer.Models
 {
@@ -14,7 +15,9 @@ namespace ExPlayer.Models
 
         public bool HasNext()
         {
-            if (FileInfoWrappers.Count == 0)
+            var fws = FileInfoWrappers.Where(f => f.IsSoundFile()).ToList();
+
+            if (fws.Count == 0)
             {
                 return false;
             }
@@ -24,7 +27,7 @@ namespace ExPlayer.Models
                 return true;
             }
 
-            if (Index >= FileInfoWrappers.Count - 1)
+            if (Index >= fws.Count - 1)
             {
                 return Loop;
             }
@@ -34,12 +37,14 @@ namespace ExPlayer.Models
 
         public FileInfoWrapper GetNext()
         {
+            var fws = FileInfoWrappers.Where(f => f.IsSoundFile()).ToList();
+
             if (!HasNext())
             {
                 return null;
             }
 
-            if (Index >= FileInfoWrappers.Count - 1)
+            if (Index >= fws.Count - 1)
             {
                 Index = -1;
             }
@@ -47,11 +52,11 @@ namespace ExPlayer.Models
             if (FirstCall)
             {
                 FirstCall = false;
-                return FileInfoWrappers[Index];
+                return fws[Index];
             }
 
             Index++;
-            return FileInfoWrappers[Index];
+            return fws[Index];
         }
     }
 }
