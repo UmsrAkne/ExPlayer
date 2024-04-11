@@ -9,7 +9,7 @@ using Prism.Mvvm;
 namespace ExPlayer.ViewModels
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : BindableBase, IDisposable
     {
         private readonly DatabaseContext databaseContext;
         private readonly DispatcherTimer timer;
@@ -112,6 +112,17 @@ namespace ExPlayer.ViewModels
         });
 
         private AudioPlayer AudioPlayer { get; set; } = new ();
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            AudioPlayer.Dispose();
+            databaseContext.Dispose();
+        }
 
         private void Play()
         {
