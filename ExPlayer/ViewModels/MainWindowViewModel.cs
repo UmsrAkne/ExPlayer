@@ -9,7 +9,7 @@ using Prism.Mvvm;
 namespace ExPlayer.ViewModels
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : BindableBase, IDisposable
     {
         private readonly DatabaseContext databaseContext;
         private readonly DispatcherTimer timer;
@@ -23,6 +23,7 @@ namespace ExPlayer.ViewModels
             databaseContext.Database.EnsureCreated();
 
             CurrentDirectoryPath = "C:\\";
+            CurrentDirectoryPath = "C:\\MyFiles\\temp";
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
 
@@ -36,6 +37,14 @@ namespace ExPlayer.ViewModels
                 AudioLength = AudioPlayer.Length;
                 RaisePropertyChanged(nameof(PlaybackPosition));
                 RaisePropertyChanged(nameof(AudioLength));
+            };
+
+            AudioPlayer.PlayCompleted += (_, _) =>
+            {
+                if (AudioProvider.HasNext())
+                {
+                    Play(true);
+                }
             };
 
             timer.Start();
@@ -72,7 +81,7 @@ namespace ExPlayer.ViewModels
 
             if (FileListViewModel.SelectedItem.IsSoundFile())
             {
-                Play();
+                Play(false);
                 return;
             }
 
@@ -113,7 +122,20 @@ namespace ExPlayer.ViewModels
 
         private AudioPlayer AudioPlayer { get; set; } = new ();
 
-        private void Play()
+        private AudioProvider AudioProvider { get; set; } = new ();
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            AudioPlayer.Dispose();
+            databaseContext.Dispose();
+        }
+
+        private void Play(bool autoPlaying)
         {
             var item = FileListViewModel.SelectedItem;
             if (!item.IsSoundFile())
@@ -121,8 +143,17 @@ namespace ExPlayer.ViewModels
                 return;
             }
 
-            AudioPlayer.Play(item.FileSystemInfo.FullName);
-            databaseContext.AddListenCount(item);
+            if (!autoPlaying)
+            {
+                AudioProvider.FirstCall = true;
+                AudioProvider.Index = FileListViewModel.SelectedIndex;
+            }
+
+            var sound = AudioProvider.GetNext();
+            System.Diagnostics.Debug.WriteLine($"{sound.Index}(MainWindowViewModel : 154)");
+
+            AudioPlayer.Play(sound.FileSystemInfo.FullName);
+            databaseContext.AddListenCount(sound);
         }
 
         private void MoveDirectory(string path)
@@ -158,6 +189,7 @@ namespace ExPlayer.ViewModels
             databaseContext.AddRange(la.Values.ToList());
 
             FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
+            AudioProvider.FileInfoWrappers = files;
         }
     }
 }

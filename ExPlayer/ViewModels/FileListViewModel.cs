@@ -12,8 +12,11 @@ namespace ExPlayer.ViewModels
     {
         private FileInfoWrapper selectedItem;
         private bool includeAllFiles = true;
+        private int selectedIndex;
 
         public ObservableCollection<FileInfoWrapper> Files { get; init; } = new ();
+
+        public int SelectedIndex { get => selectedIndex; set => SetProperty(ref selectedIndex, value); }
 
         public FileInfoWrapper SelectedItem
         {

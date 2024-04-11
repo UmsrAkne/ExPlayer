@@ -84,5 +84,28 @@ namespace ExPlayerTest.Models
 
             Assert.AreEqual("a.mp3",audioProvider.GetNext().Name);
         }
+
+        [Test]
+        public void GetNextTest_要素4_ループ()
+        {
+            var audioProvider = new AudioProvider
+            {
+                Loop = true,
+                Index = 0,
+                FileInfoWrappers = new List<FileInfoWrapper>()
+                {
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("a.mp3"), },
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("b.mp3"), },
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("c.mp3"), },
+                    new FileInfoWrapper() { FileSystemInfo = new FileInfo("d.mp3"), },
+                },
+            };
+
+            Assert.AreEqual("a.mp3", audioProvider.GetNext().Name);
+            Assert.AreEqual("b.mp3", audioProvider.GetNext().Name);
+            Assert.AreEqual("c.mp3", audioProvider.GetNext().Name);
+            Assert.AreEqual("d.mp3", audioProvider.GetNext().Name);
+            Assert.AreEqual("a.mp3", audioProvider.GetNext().Name);
+        }
     }
 }

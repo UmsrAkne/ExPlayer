@@ -9,10 +9,24 @@ namespace ExPlayer.Models
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class AudioPlayer : IDisposable
     {
-        private readonly WaveOutEvent waveOut = new ();
+        private readonly WaveOutEvent waveOut;
         private IWaveProvider reader;
         private bool waveOutEventIsEnabled;
         private string currentFileExtension = string.Empty;
+
+        public AudioPlayer()
+        {
+            waveOut = new WaveOutEvent();
+            waveOut.PlaybackStopped += (_, _) =>
+            {
+                if (waveOut.PlaybackState == PlaybackState.Stopped)
+                {
+                    PlayCompleted?.Invoke(this, EventArgs.Empty);
+                }
+            };
+        }
+
+        public event EventHandler PlayCompleted;
 
         public long Position => waveOutEventIsEnabled ? (long)waveOut.GetPositionTimeSpan().TotalSeconds : 0;
 

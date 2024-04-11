@@ -9,7 +9,7 @@ namespace ExPlayer.Models
 
         public bool FirstCall { get; set; } = true;
 
-        public int Index { get; private set; }
+        public int Index { get; set; }
 
         public List<FileInfoWrapper> FileInfoWrappers { private get; set; } = new ();
 
@@ -55,8 +55,7 @@ namespace ExPlayer.Models
                 return fws[Index];
             }
 
-            Index++;
-            return fws[Index];
+            return fws[++Index];
         }
     }
 }
