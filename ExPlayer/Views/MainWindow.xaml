@@ -83,6 +83,22 @@
 
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
 
+                                <TextBlock
+                                    Width="15"
+                                    Margin="1,0"
+                                    VerticalAlignment="Center">
+
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Playing}" Value="True">
+                                                    <Setter Property="Text" Value="▶" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
                                 <TextBlock Text="{Binding Index, Converter={StaticResource NumberFormatConverter}}" />
                                 <Border
                                     Width="1"
