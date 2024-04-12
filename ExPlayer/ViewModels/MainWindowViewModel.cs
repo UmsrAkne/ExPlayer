@@ -196,6 +196,7 @@ namespace ExPlayer.ViewModels
                 if (la.TryGetValue(item.Key, out var itemA))
                 {
                     itemA.ListenCount = item.Value.ListenCount;
+                    itemA.PlaybackProgressTicks = item.Value.PlaybackProgressTicks;
 
                     // ここで値が見つかった場合、DB 登録済みということなので、リストから消しておく
                     la.Remove(item.Key);
