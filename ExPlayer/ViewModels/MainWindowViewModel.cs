@@ -23,7 +23,6 @@ namespace ExPlayer.ViewModels
             databaseContext.Database.EnsureCreated();
 
             CurrentDirectoryPath = "C:\\";
-            CurrentDirectoryPath = "C:\\MyFiles\\temp";
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
 
@@ -41,7 +40,7 @@ namespace ExPlayer.ViewModels
 
             AudioPlayer.PlayCompleted += (_, _) =>
             {
-                if (AudioProvider.HasNext())
+                if (FileListViewModel.AudioProvider.HasNext())
                 {
                     Play(true);
                 }
@@ -120,9 +119,24 @@ namespace ExPlayer.ViewModels
             AudioPlayer.Stop();
         });
 
-        private AudioPlayer AudioPlayer { get; set; } = new ();
+        public DelegateCommand SavePlayingAudioInfoCommand => new DelegateCommand(() =>
+        {
+            if (AudioPlayer.CurrentFile == null)
+            {
+                return;
+            }
 
-        private AudioProvider AudioProvider { get; set; } = new ();
+            var a = databaseContext.ListenHistory
+                .FirstOrDefault(f => f.FullName == AudioPlayer.CurrentFile.FullName);
+
+            if (a != null)
+            {
+                a.PlaybackProgressTicks = TimeSpan.FromSeconds(AudioPlayer.GetCurrentTime()).Ticks;
+                databaseContext.SaveChanges();
+            }
+        });
+
+        private AudioPlayer AudioPlayer { get; set; } = new ();
 
         public void Dispose()
         {
@@ -145,14 +159,15 @@ namespace ExPlayer.ViewModels
 
             if (!autoPlaying)
             {
-                AudioProvider.FirstCall = true;
-                AudioProvider.Index = FileListViewModel.SelectedIndex;
+                FileListViewModel.AudioProvider.FirstCall = true;
+                FileListViewModel.AudioProvider.Index = FileListViewModel.SelectedIndex;
             }
 
-            var sound = AudioProvider.GetNext();
-            System.Diagnostics.Debug.WriteLine($"{sound.Index}(MainWindowViewModel : 154)");
+            SavePlayingAudioInfoCommand.Execute();
 
-            AudioPlayer.Play(sound.FileSystemInfo.FullName);
+            var sound = FileListViewModel.AudioProvider.GetNext();
+
+            AudioPlayer.Play(sound);
             databaseContext.AddListenCount(sound);
         }
 
@@ -179,6 +194,7 @@ namespace ExPlayer.ViewModels
                 if (la.TryGetValue(item.Key, out var itemA))
                 {
                     itemA.ListenCount = item.Value.ListenCount;
+                    itemA.PlaybackProgressTicks = item.Value.PlaybackProgressTicks;
 
                     // ここで値が見つかった場合、DB 登録済みということなので、リストから消しておく
                     la.Remove(item.Key);
@@ -189,7 +205,6 @@ namespace ExPlayer.ViewModels
             databaseContext.AddRange(la.Values.ToList());
 
             FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
-            AudioProvider.FileInfoWrappers = files;
         }
     }
 }

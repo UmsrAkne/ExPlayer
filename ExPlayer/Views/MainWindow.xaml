@@ -16,8 +16,15 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding SavePlayingAudioInfoCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Window.Resources>
         <converters:NumberFormatConverter x:Key="NumberFormatConverter" />
+        <models:TicksToTimeStringConverter x:Key="TicksToTimeStringConverter" />
     </Window.Resources>
 
     <Grid>
@@ -83,6 +90,22 @@
 
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
 
+                                <TextBlock
+                                    Width="15"
+                                    Margin="1,0"
+                                    VerticalAlignment="Center">
+
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Playing}" Value="True">
+                                                    <Setter Property="Text" Value="▶" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
                                 <TextBlock Text="{Binding Index, Converter={StaticResource NumberFormatConverter}}" />
                                 <Border
                                     Width="1"
@@ -108,7 +131,24 @@
                                     Margin="5,0"
                                     Background="Black" />
                                 <TextBlock Width="30" Text="{Binding ListenCount}" />
+
+                                <Border
+                                    Width="1"
+                                    Margin="5,0"
+                                    Background="Black" />
+                                <TextBlock Text="{Binding PlaybackProgressTicks, Converter={StaticResource TicksToTimeStringConverter}}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PlaybackProgressTicks}" Value="0">
+                                                    <Setter Property="Opacity" Value="0.3" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </StackPanel>
+
                         </Grid>
                     </Border>
                 </DataTemplate>

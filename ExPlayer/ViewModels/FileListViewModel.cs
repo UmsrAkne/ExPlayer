@@ -18,6 +18,8 @@ namespace ExPlayer.ViewModels
 
         public int SelectedIndex { get => selectedIndex; set => SetProperty(ref selectedIndex, value); }
 
+        public AudioProvider AudioProvider { get; private set; } = new ();
+
         public FileInfoWrapper SelectedItem
         {
             get => selectedItem;
@@ -53,6 +55,7 @@ namespace ExPlayer.ViewModels
 
             Files.Clear();
             Files.AddRange(list);
+            AudioProvider.FileInfoWrappers = list;
         }
     }
 }

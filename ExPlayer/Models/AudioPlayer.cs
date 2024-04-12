@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using NAudio.Utils;
 using NAudio.Vorbis;
 using NAudio.Wave;
@@ -13,6 +12,7 @@ namespace ExPlayer.Models
         private IWaveProvider reader;
         private bool waveOutEventIsEnabled;
         private string currentFileExtension = string.Empty;
+        private FileInfoWrapper lastPlayFile;
 
         public AudioPlayer()
         {
@@ -21,6 +21,7 @@ namespace ExPlayer.Models
             {
                 if (waveOut.PlaybackState == PlaybackState.Stopped)
                 {
+                    CurrentFile = null;
                     PlayCompleted?.Invoke(this, EventArgs.Empty);
                 }
             };
@@ -32,23 +33,25 @@ namespace ExPlayer.Models
 
         public long Length { get; private set; }
 
-        public void Play(string audioFilePath)
+        public FileInfoWrapper CurrentFile { get; private set; }
+
+        public void Play(FileInfoWrapper audioFile)
         {
-            if (new FileInfo(audioFilePath).Extension == ".mp3")
+            if (audioFile.FileSystemInfo.Extension == ".mp3")
             {
-                var m = new Mp3FileReader(audioFilePath);
+                var m = new Mp3FileReader(audioFile.FullName);
                 Length = (long)m.TotalTime.TotalSeconds;
                 reader = m;
             }
-            else if (new FileInfo(audioFilePath).Extension == ".ogg")
+            else if (audioFile.FileSystemInfo.Extension == ".ogg")
             {
-                var v = new VorbisWaveReader(audioFilePath);
+                var v = new VorbisWaveReader(audioFile.FullName);
                 Length = (long)v.TotalTime.TotalSeconds;
                 reader = v;
             }
-            else if (new FileInfo(audioFilePath).Extension == ".wav")
+            else if (audioFile.FileSystemInfo.Extension == ".wav")
             {
-                var w = new WaveFileReader(audioFilePath);
+                var w = new WaveFileReader(audioFile.FullName);
                 Length = (long)w.TotalTime.TotalSeconds;
                 reader = w;
             }
@@ -63,7 +66,17 @@ namespace ExPlayer.Models
                 return;
             }
 
-            currentFileExtension = new FileInfo(audioFilePath).Extension;
+            Stop();
+
+            currentFileExtension = audioFile.FileSystemInfo.Extension;
+            audioFile.Playing = true;
+            if (lastPlayFile != null)
+            {
+                lastPlayFile.Playing = false;
+            }
+
+            lastPlayFile = audioFile;
+            CurrentFile = audioFile;
             waveOutEventIsEnabled = true;
             waveOut.Init(reader);
             waveOut.Play();
@@ -71,6 +84,7 @@ namespace ExPlayer.Models
 
         public void Stop()
         {
+            CurrentFile = null;
             waveOut.Stop();
             waveOutEventIsEnabled = false;
         }
