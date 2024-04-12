@@ -150,7 +150,7 @@ namespace ExPlayer.ViewModels
             var sound = FileListViewModel.AudioProvider.GetNext();
             System.Diagnostics.Debug.WriteLine($"{sound.Index}(MainWindowViewModel : 154)");
 
-            AudioPlayer.Play(sound.FileSystemInfo.FullName);
+            AudioPlayer.Play(sound);
             databaseContext.AddListenCount(sound);
         }
 

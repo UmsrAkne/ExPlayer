@@ -9,6 +9,7 @@ namespace ExPlayer.Models
     {
         private readonly FileSystemInfo fileSystemInfo;
         private int index;
+        private bool playing;
 
         [Key]
         [Required]
@@ -45,6 +46,9 @@ namespace ExPlayer.Models
 
         [NotMapped]
         public int OriginalIndex { get; set; }
+
+        [NotMapped]
+        public bool Playing { get => playing; set => SetProperty(ref playing, value); }
 
         public int ListenCount { get; set; }
 
