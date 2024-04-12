@@ -23,7 +23,6 @@ namespace ExPlayer.ViewModels
             databaseContext.Database.EnsureCreated();
 
             CurrentDirectoryPath = "C:\\";
-            CurrentDirectoryPath = "C:\\MyFiles\\temp";
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
 
@@ -167,7 +166,6 @@ namespace ExPlayer.ViewModels
             SavePlayingAudioInfoCommand.Execute();
 
             var sound = FileListViewModel.AudioProvider.GetNext();
-            System.Diagnostics.Debug.WriteLine($"{sound.Index}(MainWindowViewModel : 154)");
 
             AudioPlayer.Play(sound);
             databaseContext.AddListenCount(sound);
