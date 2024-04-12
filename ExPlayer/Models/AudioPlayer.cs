@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using NAudio.Utils;
 using NAudio.Vorbis;
 using NAudio.Wave;
