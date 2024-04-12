@@ -22,6 +22,7 @@ namespace ExPlayer.Models
             {
                 if (waveOut.PlaybackState == PlaybackState.Stopped)
                 {
+                    CurrentFile = null;
                     PlayCompleted?.Invoke(this, EventArgs.Empty);
                 }
             };
@@ -32,6 +33,8 @@ namespace ExPlayer.Models
         public long Position => waveOutEventIsEnabled ? (long)waveOut.GetPositionTimeSpan().TotalSeconds : 0;
 
         public long Length { get; private set; }
+
+        public FileInfoWrapper CurrentFile { get; private set; }
 
         public void Play(FileInfoWrapper audioFile)
         {
@@ -64,6 +67,8 @@ namespace ExPlayer.Models
                 return;
             }
 
+            Stop();
+
             currentFileExtension = audioFile.FileSystemInfo.Extension;
             audioFile.Playing = true;
             if (lastPlayFile != null)
@@ -72,6 +77,7 @@ namespace ExPlayer.Models
             }
 
             lastPlayFile = audioFile;
+            CurrentFile = audioFile;
             waveOutEventIsEnabled = true;
             waveOut.Init(reader);
             waveOut.Play();
@@ -79,6 +85,7 @@ namespace ExPlayer.Models
 
         public void Stop()
         {
+            CurrentFile = null;
             waveOut.Stop();
             waveOutEventIsEnabled = false;
         }
