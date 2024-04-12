@@ -164,6 +164,8 @@ namespace ExPlayer.ViewModels
                 FileListViewModel.AudioProvider.Index = FileListViewModel.SelectedIndex;
             }
 
+            SavePlayingAudioInfoCommand.Execute();
+
             var sound = FileListViewModel.AudioProvider.GetNext();
             System.Diagnostics.Debug.WriteLine($"{sound.Index}(MainWindowViewModel : 154)");
 

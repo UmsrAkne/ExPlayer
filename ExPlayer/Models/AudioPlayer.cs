@@ -67,6 +67,8 @@ namespace ExPlayer.Models
                 return;
             }
 
+            Stop();
+
             currentFileExtension = audioFile.FileSystemInfo.Extension;
             audioFile.Playing = true;
             if (lastPlayFile != null)
