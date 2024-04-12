@@ -41,7 +41,7 @@ namespace ExPlayer.ViewModels
 
             AudioPlayer.PlayCompleted += (_, _) =>
             {
-                if (AudioProvider.HasNext())
+                if (FileListViewModel.AudioProvider.HasNext())
                 {
                     Play(true);
                 }
@@ -122,8 +122,6 @@ namespace ExPlayer.ViewModels
 
         private AudioPlayer AudioPlayer { get; set; } = new ();
 
-        private AudioProvider AudioProvider { get; set; } = new ();
-
         public void Dispose()
         {
             Dispose(true);
@@ -145,11 +143,11 @@ namespace ExPlayer.ViewModels
 
             if (!autoPlaying)
             {
-                AudioProvider.FirstCall = true;
-                AudioProvider.Index = FileListViewModel.SelectedIndex;
+                FileListViewModel.AudioProvider.FirstCall = true;
+                FileListViewModel.AudioProvider.Index = FileListViewModel.SelectedIndex;
             }
 
-            var sound = AudioProvider.GetNext();
+            var sound = FileListViewModel.AudioProvider.GetNext();
             System.Diagnostics.Debug.WriteLine($"{sound.Index}(MainWindowViewModel : 154)");
 
             AudioPlayer.Play(sound.FileSystemInfo.FullName);
@@ -189,7 +187,6 @@ namespace ExPlayer.ViewModels
             databaseContext.AddRange(la.Values.ToList());
 
             FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
-            AudioProvider.FileInfoWrappers = files;
         }
     }
 }
