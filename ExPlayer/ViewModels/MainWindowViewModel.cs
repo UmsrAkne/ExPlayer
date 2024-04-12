@@ -120,6 +120,23 @@ namespace ExPlayer.ViewModels
             AudioPlayer.Stop();
         });
 
+        public DelegateCommand SavePlayingAudioInfoCommand => new DelegateCommand(() =>
+        {
+            if (AudioPlayer.CurrentFile == null)
+            {
+                return;
+            }
+
+            var a = databaseContext.ListenHistory
+                .FirstOrDefault(f => f.FullName == AudioPlayer.CurrentFile.FullName);
+
+            if (a != null)
+            {
+                a.PlaybackProgressTicks = TimeSpan.FromSeconds(AudioPlayer.GetCurrentTime()).Ticks;
+                databaseContext.SaveChanges();
+            }
+        });
+
         private AudioPlayer AudioPlayer { get; set; } = new ();
 
         public void Dispose()
