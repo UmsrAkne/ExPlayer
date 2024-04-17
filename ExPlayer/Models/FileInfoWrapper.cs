@@ -10,6 +10,7 @@ namespace ExPlayer.Models
         private readonly FileSystemInfo fileSystemInfo;
         private int index;
         private bool playing;
+        private bool ignore;
 
         [Key]
         [Required]
@@ -56,6 +57,9 @@ namespace ExPlayer.Models
 
         [Required]
         public string ParentDirectoryPath { get; set; } = string.Empty;
+
+        [Required]
+        public bool Ignore { get => ignore; set => SetProperty(ref ignore, value); }
 
         [Required]
         public string FullName { get; set; }
