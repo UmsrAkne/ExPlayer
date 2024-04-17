@@ -15,12 +15,9 @@ namespace ExPlayer.Models
 
         public bool HasNext()
         {
-            var fws = FileInfoWrappers
-                .Where(f => f.IsSoundFile())
-                .Where(f => !f.Ignore)
-                .ToList();
+            var fws = FileInfoWrappers.Where(f => f.IsSoundFile()).ToList();
 
-            if (fws.Count == 0)
+            if (fws.Count == 0 || fws.All(f => f.Ignore))
             {
                 return false;
             }
@@ -40,28 +37,42 @@ namespace ExPlayer.Models
 
         public FileInfoWrapper GetNext()
         {
-            var fws = FileInfoWrappers
-                .Where(f => f.IsSoundFile())
-                .Where(f => !f.Ignore)
-                .ToList();
-
-            if (!HasNext())
+            while (true)
             {
-                return null;
+                var f = GetNextFileInfoWrapper();
+                if (f == null)
+                {
+                    return null;
+                }
+
+                if (!f.Ignore)
+                {
+                    return f;
+                }
             }
 
-            if (Index >= fws.Count - 1)
+            FileInfoWrapper GetNextFileInfoWrapper()
             {
-                Index = -1;
-            }
+                var fws = FileInfoWrappers.Where(f => f.IsSoundFile()).ToList();
 
-            if (FirstCall)
-            {
-                FirstCall = false;
-                return fws[Index];
-            }
+                if (!HasNext())
+                {
+                    return null;
+                }
 
-            return fws[++Index];
+                if (Index >= fws.Count - 1)
+                {
+                    Index = -1;
+                }
+
+                if (FirstCall)
+                {
+                    FirstCall = false;
+                    return fws[Index];
+                }
+
+                return fws[++Index];
+            }
         }
     }
 }
