@@ -15,7 +15,10 @@ namespace ExPlayer.Models
 
         public bool HasNext()
         {
-            var fws = FileInfoWrappers.Where(f => f.IsSoundFile()).ToList();
+            var fws = FileInfoWrappers
+                .Where(f => f.IsSoundFile())
+                .Where(f => !f.Ignore)
+                .ToList();
 
             if (fws.Count == 0)
             {
@@ -37,7 +40,10 @@ namespace ExPlayer.Models
 
         public FileInfoWrapper GetNext()
         {
-            var fws = FileInfoWrappers.Where(f => f.IsSoundFile()).ToList();
+            var fws = FileInfoWrappers
+                .Where(f => f.IsSoundFile())
+                .Where(f => !f.Ignore)
+                .ToList();
 
             if (!HasNext())
             {

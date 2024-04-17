@@ -68,6 +68,7 @@
             <ListView.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
                 <KeyBinding Key="BackSpace" Command="{Binding MoveParentDirectoryCommand}" />
+                <KeyBinding Key="i" Command="{Binding FileListViewModel.ToggleIgnorePropertyCommand}" />
             </ListView.InputBindings>
 
             <i:Interaction.Behaviors>
@@ -81,6 +82,17 @@
                         <Border.InputBindings>
                             <MouseBinding Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=ListView}}" MouseAction="LeftDoubleClick" />
                         </Border.InputBindings>
+
+                        <Border.Style>
+                            <Style TargetType="Border">
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Ignore}" Value="True">
+                                        <Setter Property="Opacity" Value="0.4" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
 
                         <Grid>
                             <Grid.ColumnDefinitions>

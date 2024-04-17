@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ExPlayer.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace ExPlayer.ViewModels
@@ -33,6 +34,16 @@ namespace ExPlayer.ViewModels
         /// デフォルトは true です。この状態は、全てのファイルの入力を受け付けます。
         /// </value>
         public bool IncludeAllFiles { get => includeAllFiles; set => SetProperty(ref includeAllFiles, value); }
+
+        public DelegateCommand ToggleIgnorePropertyCommand => new (() =>
+        {
+            if (SelectedItem == null || !SelectedItem.IsSoundFile())
+            {
+                return;
+            }
+
+            SelectedItem.Ignore = !SelectedItem.Ignore;
+        });
 
         /// <summary>
         /// Files のリストを、入力したリストに置き換えます。
