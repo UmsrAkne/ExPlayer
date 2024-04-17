@@ -68,7 +68,7 @@
             <ListView.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
                 <KeyBinding Key="BackSpace" Command="{Binding MoveParentDirectoryCommand}" />
-                <KeyBinding Key="i" Command="{Binding FileListViewModel.ToggleIgnorePropertyCommand}" />
+                <KeyBinding Key="i" Command="{Binding ToggleIgnorePropertyCommand}" />
             </ListView.InputBindings>
 
             <i:Interaction.Behaviors>
