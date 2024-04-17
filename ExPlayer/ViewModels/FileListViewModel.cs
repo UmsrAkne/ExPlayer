@@ -35,16 +35,6 @@ namespace ExPlayer.ViewModels
         /// </value>
         public bool IncludeAllFiles { get => includeAllFiles; set => SetProperty(ref includeAllFiles, value); }
 
-        public DelegateCommand ToggleIgnorePropertyCommand => new (() =>
-        {
-            if (SelectedItem == null || !SelectedItem.IsSoundFile())
-            {
-                return;
-            }
-
-            SelectedItem.Ignore = !SelectedItem.Ignore;
-        });
-
         /// <summary>
         /// Files のリストを、入力したリストに置き換えます。
         /// IncludeAllFiles == true の場合、不要なファイルはリストから除外されます。

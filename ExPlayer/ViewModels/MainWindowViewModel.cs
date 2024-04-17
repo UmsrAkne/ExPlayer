@@ -136,6 +136,26 @@ namespace ExPlayer.ViewModels
             }
         });
 
+        public DelegateCommand ToggleIgnorePropertyCommand => new (() =>
+        {
+            var item = FileListViewModel.SelectedItem;
+            if (item == null || !item.IsSoundFile())
+            {
+                return;
+            }
+
+            item.Ignore = !item.Ignore;
+
+            var f = databaseContext.ListenHistory.FirstOrDefault(f => f.FullName == item.FullName);
+            if (f == null)
+            {
+                return;
+            }
+
+            f.Ignore = item.Ignore;
+            databaseContext.SaveChanges();
+        });
+
         private AudioPlayer AudioPlayer { get; set; } = new ();
 
         public void Dispose()
@@ -195,6 +215,7 @@ namespace ExPlayer.ViewModels
                 {
                     itemA.ListenCount = item.Value.ListenCount;
                     itemA.PlaybackProgressTicks = item.Value.PlaybackProgressTicks;
+                    itemA.Ignore = item.Value.Ignore;
 
                     // ここで値が見つかった場合、DB 登録済みということなので、リストから消しておく
                     la.Remove(item.Key);
