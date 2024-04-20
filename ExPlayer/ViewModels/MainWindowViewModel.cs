@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Threading;
@@ -23,6 +24,8 @@ namespace ExPlayer.ViewModels
             databaseContext.Database.EnsureCreated();
 
             CurrentDirectoryPath = "C:\\";
+            SetCurrentDirectory(@"C:\MyFiles\temp"); // デバッグビルドの時にだけ実行されるメソッド
+
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
 
@@ -227,5 +230,8 @@ namespace ExPlayer.ViewModels
 
             FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
         }
+
+        [Conditional("DEBUG")]
+        private void SetCurrentDirectory(string path) => CurrentDirectoryPath = path;
     }
 }
