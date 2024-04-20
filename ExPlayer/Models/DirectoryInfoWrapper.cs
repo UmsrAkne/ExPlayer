@@ -7,15 +7,30 @@ namespace ExPlayer.Models
 {
     public class DirectoryInfoWrapper
     {
+        private DirectoryInfo directoryInfo;
+
         [Key]
         [Required]
         public int Id { get; set; }
 
         [NotMapped]
-        public DirectoryInfo DirectoryInfo { get; set; }
-        
+        public DirectoryInfo DirectoryInfo
+        {
+            get => directoryInfo;
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                FullName = value.FullName;
+                directoryInfo = value;
+            }
+        }
+
         [Required]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
         [Required]
         public DateTime OpenDateTime { get; set; }
