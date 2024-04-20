@@ -15,6 +15,8 @@ namespace ExPlayer.Models
 
         public DbSet<DirectoryInfoWrapper> OpenedDirectoryHistory { get; set; }
 
+        public DbSet<FavoriteDirectoryInfo> FavoriteDirectories { get; set; }
+
         /// <summary>
         /// FileInfoWrapper の ListenCount を 1 増やして DB に記録します。
         /// DB に該当ファイルが記録されていなかった場合は、ファイル自体も記録します。
