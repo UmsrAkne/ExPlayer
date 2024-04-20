@@ -26,6 +26,16 @@ namespace ExPlayer.ViewModels
             CurrentDirectoryPath = "C:\\";
             SetCurrentDirectory(@"C:\MyFiles\temp"); // デバッグビルドの時にだけ実行されるメソッド
 
+            // 最後に開いていたディレクトリを取得する
+            var lastVisitedDir = databaseContext.OpenedDirectoryHistory
+                .OrderByDescending(d => d.OpenDateTime)
+                .FirstOrDefault();
+
+            if (lastVisitedDir != null)
+            {
+                CurrentDirectoryPath = lastVisitedDir.FullName;
+            }
+
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
 
