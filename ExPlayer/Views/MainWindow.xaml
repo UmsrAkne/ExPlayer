@@ -47,6 +47,8 @@
                         Header="不要なファイルも表示"
                         IsCheckable="True"
                         IsChecked="{Binding FileListViewModel.IncludeAllFiles}" />
+
+                    <MenuItem Command="{Binding OpenFavoritesCommand}" Header="お気に入り" />
                 </MenuItem>
             </Menu>
 

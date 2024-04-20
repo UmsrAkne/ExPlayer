@@ -169,6 +169,14 @@ namespace ExPlayer.ViewModels
             databaseContext.SaveChanges();
         });
 
+        public DelegateCommand OpenFavoritesCommand => new DelegateCommand(() =>
+        {
+            var list = databaseContext.FavoriteDirectories
+                .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f.FullName), });
+
+            FileListViewModel.ReplaceFileInfoWrappers(list);
+        });
+
         private AudioPlayer AudioPlayer { get; set; } = new ();
 
         public void Dispose()
