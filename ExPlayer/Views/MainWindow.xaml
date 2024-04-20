@@ -47,6 +47,8 @@
                         Header="不要なファイルも表示"
                         IsCheckable="True"
                         IsChecked="{Binding FileListViewModel.IncludeAllFiles}" />
+
+                    <MenuItem Command="{Binding OpenFavoritesCommand}" Header="お気に入り" />
                 </MenuItem>
             </Menu>
 
@@ -69,6 +71,10 @@
                 <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
                 <KeyBinding Key="BackSpace" Command="{Binding MoveParentDirectoryCommand}" />
                 <KeyBinding Key="i" Command="{Binding ToggleIgnorePropertyCommand}" />
+                <KeyBinding
+                    Key="D"
+                    Command="{Binding AddFavoriteDirectoryCommand}"
+                    Modifiers="Control" />
             </ListView.InputBindings>
 
             <i:Interaction.Behaviors>

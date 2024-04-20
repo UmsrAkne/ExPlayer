@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Threading;
@@ -23,6 +24,18 @@ namespace ExPlayer.ViewModels
             databaseContext.Database.EnsureCreated();
 
             CurrentDirectoryPath = "C:\\";
+            SetCurrentDirectory(@"C:\MyFiles\temp"); // デバッグビルドの時にだけ実行されるメソッド
+
+            // 最後に開いていたディレクトリを取得する
+            var lastVisitedDir = databaseContext.OpenedDirectoryHistory
+                .OrderByDescending(d => d.OpenDateTime)
+                .FirstOrDefault();
+
+            if (lastVisitedDir != null)
+            {
+                CurrentDirectoryPath = lastVisitedDir.FullName;
+            }
+
             FileListViewModel = new FileListViewModel();
             MoveDirectory(CurrentDirectoryPath);
 
@@ -156,6 +169,27 @@ namespace ExPlayer.ViewModels
             databaseContext.SaveChanges();
         });
 
+        public DelegateCommand OpenFavoritesCommand => new DelegateCommand(() =>
+        {
+            var list = databaseContext.FavoriteDirectories
+                .Select(f => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(f.FullName), });
+
+            FileListViewModel.ReplaceFileInfoWrappers(list);
+        });
+
+        public DelegateCommand AddFavoriteDirectoryCommand => new DelegateCommand(() =>
+        {
+            if (CurrentDirectoryPath != null && Directory.Exists(CurrentDirectoryPath))
+            {
+                databaseContext.FavoriteDirectories.Add(new FavoriteDirectoryInfo()
+                {
+                    DirectoryInfo = new DirectoryInfo(CurrentDirectoryPath),
+                });
+
+                databaseContext.SaveChanges();
+            }
+        });
+
         private AudioPlayer AudioPlayer { get; set; } = new ();
 
         public void Dispose()
@@ -195,6 +229,15 @@ namespace ExPlayer.ViewModels
         {
             CurrentDirectoryPath = path;
 
+            // 開いたディレクトリの情報の記録処理を以下に実装する。
+            // ただし、現状では、 path から必ず DirectoryInfo が生成できることを前提にしている。
+            // 今後の実装で、ディレクトリ以外のパスがこのメソッドに入ってくる場合は改修が必要。
+            databaseContext.AddDirectoryHistory(new DirectoryInfoWrapper()
+            {
+                DirectoryInfo = new DirectoryInfo(path),
+                OpenDateTime = DateTime.Now,
+            });
+
             var files = Directory.GetFiles(path)
                 .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }).ToList();
 
@@ -227,5 +270,8 @@ namespace ExPlayer.ViewModels
 
             FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
         }
+
+        [Conditional("DEBUG")]
+        private void SetCurrentDirectory(string path) => CurrentDirectoryPath = path;
     }
 }
