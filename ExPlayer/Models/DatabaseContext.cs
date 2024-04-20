@@ -13,6 +13,8 @@ namespace ExPlayer.Models
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public DbSet<FileInfoWrapper> ListenHistory { get; set; }
 
+        public DbSet<DirectoryInfoWrapper> OpenedDirectoryHistory { get; set; }
+
         /// <summary>
         /// FileInfoWrapper の ListenCount を 1 増やして DB に記録します。
         /// DB に該当ファイルが記録されていなかった場合は、ファイル自体も記録します。
@@ -32,6 +34,17 @@ namespace ExPlayer.Models
                 ListenHistory.Add(wrapper);
             }
 
+            SaveChanges();
+        }
+
+        public void AddDirectoryHistory(DirectoryInfoWrapper directoryInfoWrapper)
+        {
+            if (directoryInfoWrapper.DirectoryInfo == null)
+            {
+                return;
+            }
+
+            OpenedDirectoryHistory.Add(directoryInfoWrapper);
             SaveChanges();
         }
 

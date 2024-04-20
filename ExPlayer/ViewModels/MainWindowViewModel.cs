@@ -198,6 +198,15 @@ namespace ExPlayer.ViewModels
         {
             CurrentDirectoryPath = path;
 
+            // 開いたディレクトリの情報の記録処理を以下に実装する。
+            // ただし、現状では、 path から必ず DirectoryInfo が生成できることを前提にしている。
+            // 今後の実装で、ディレクトリ以外のパスがこのメソッドに入ってくる場合は改修が必要。
+            databaseContext.AddDirectoryHistory(new DirectoryInfoWrapper()
+            {
+                DirectoryInfo = new DirectoryInfo(path),
+                OpenDateTime = DateTime.Now,
+            });
+
             var files = Directory.GetFiles(path)
                 .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }).ToList();
 
