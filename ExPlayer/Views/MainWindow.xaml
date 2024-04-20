@@ -71,6 +71,10 @@
                 <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
                 <KeyBinding Key="BackSpace" Command="{Binding MoveParentDirectoryCommand}" />
                 <KeyBinding Key="i" Command="{Binding ToggleIgnorePropertyCommand}" />
+                <KeyBinding
+                    Key="D"
+                    Command="{Binding AddFavoriteDirectoryCommand}"
+                    Modifiers="Control" />
             </ListView.InputBindings>
 
             <i:Interaction.Behaviors>

@@ -172,9 +172,22 @@ namespace ExPlayer.ViewModels
         public DelegateCommand OpenFavoritesCommand => new DelegateCommand(() =>
         {
             var list = databaseContext.FavoriteDirectories
-                .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f.FullName), });
+                .Select(f => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(f.FullName), });
 
             FileListViewModel.ReplaceFileInfoWrappers(list);
+        });
+
+        public DelegateCommand AddFavoriteDirectoryCommand => new DelegateCommand(() =>
+        {
+            if (CurrentDirectoryPath != null && Directory.Exists(CurrentDirectoryPath))
+            {
+                databaseContext.FavoriteDirectories.Add(new FavoriteDirectoryInfo()
+                {
+                    DirectoryInfo = new DirectoryInfo(CurrentDirectoryPath),
+                });
+
+                databaseContext.SaveChanges();
+            }
         });
 
         private AudioPlayer AudioPlayer { get; set; } = new ();
