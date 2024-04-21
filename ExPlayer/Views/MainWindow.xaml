@@ -50,6 +50,10 @@
 
                     <MenuItem Command="{Binding OpenFavoritesCommand}" Header="お気に入り" />
                 </MenuItem>
+
+                <MenuItem Header="機能">
+                    <MenuItem Command="{Binding AddFavoriteDirectoryCommand}" Header="お気に入りに追加 (Ctrl + D)" />
+                </MenuItem>
             </Menu>
 
             <TextBox Padding="2,1" Text="{Binding CurrentDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
