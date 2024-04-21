@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace ExPlayerTest.Models
 {
     [TestFixture]
-    public class AudioPlayerTest
+    public class AudioProviderTest
     {
         [Test]
         [TestCase(true)]
