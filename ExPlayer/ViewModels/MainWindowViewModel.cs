@@ -17,6 +17,7 @@ namespace ExPlayer.ViewModels
         private string title = "ExPlayer";
         private string currentDirectoryPath;
         private long playbackPosition;
+        private string message;
 
         public MainWindowViewModel()
         {
@@ -83,6 +84,8 @@ namespace ExPlayer.ViewModels
         public long AudioLength { get; set; }
 
         public FileListViewModel FileListViewModel { get; set; }
+
+        public string Message { get => message; set => SetProperty(ref message, value); }
 
         public DelegateCommand OpenCommand => new DelegateCommand(() =>
         {
