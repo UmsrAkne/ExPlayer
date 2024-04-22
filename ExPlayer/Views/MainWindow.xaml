@@ -244,6 +244,10 @@
                 TickFrequency="1"
                 Value="{Binding PlaybackPosition}" />
 
+            <StatusBar>
+                <TextBlock Text="{Binding Message}" />
+            </StatusBar>
+
         </StackPanel>
     </Grid>
 </Window>
