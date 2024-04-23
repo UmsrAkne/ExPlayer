@@ -131,7 +131,7 @@
                                 <TextBlock Text="{Binding Index, Converter={StaticResource NumberFormatConverter}}" />
                                 <Border
                                     Width="1"
-                                    Margin="3,0"
+                                    Margin="6,0"
                                     Background="Black" />
 
                                 <TextBlock Width="300" Text="{Binding Name}">
