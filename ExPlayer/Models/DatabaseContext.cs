@@ -41,7 +41,7 @@ namespace ExPlayer.Models
 
         public void AddDirectoryHistory(DirectoryInfoWrapper directoryInfoWrapper)
         {
-            if (directoryInfoWrapper.DirectoryInfo == null)
+            if (string.IsNullOrWhiteSpace(directoryInfoWrapper.FullName))
             {
                 return;
             }
