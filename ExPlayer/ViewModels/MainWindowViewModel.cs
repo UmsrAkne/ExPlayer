@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -124,7 +125,7 @@ namespace ExPlayer.ViewModels
 
         public DelegateCommand JumpToDirectoryCommand => new DelegateCommand(() =>
         {
-            if (Directory.Exists(CurrentDirectoryPath))
+            if (Directory.Exists(CurrentDirectoryPath) || IsM3U(CurrentDirectoryPath))
             {
                 MoveDirectory(CurrentDirectoryPath);
             }
@@ -232,20 +233,16 @@ namespace ExPlayer.ViewModels
         {
             CurrentDirectoryPath = path;
 
-            // 開いたディレクトリの情報の記録処理を以下に実装する。
-            // ただし、現状では、 path から必ず DirectoryInfo が生成できることを前提にしている。
-            // 今後の実装で、ディレクトリ以外のパスがこのメソッドに入ってくる場合は改修が必要。
+            // 開いたディレクトリの情報の記録処理
             databaseContext.AddDirectoryHistory(new DirectoryInfoWrapper()
             {
-                DirectoryInfo = new DirectoryInfo(path),
                 OpenDateTime = DateTime.Now,
+                FullName = Directory.Exists(path) ? new DirectoryInfo(path).FullName : path,
             });
 
-            var files = Directory.GetFiles(path)
-                .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }).ToList();
-
-            var dirs = Directory.GetDirectories(path)
-                .Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), });
+            var pathIsM3UFile = IsM3U(path);
+            var files = pathIsM3UFile ? M3UFileReader.GetFilesFrom(path) : GetFiles(path);
+            var dirs = !pathIsM3UFile ? GetDirectories(path) : new List<FileInfoWrapper>();
 
             // 視聴回数を入力する処理
             // 作業ディレクトリのファイルリストと、現在のディレクトリパスで検索したファイルリストを辞書化する。
@@ -272,6 +269,51 @@ namespace ExPlayer.ViewModels
             databaseContext.AddRange(la.Values.ToList());
 
             FileListViewModel.ReplaceFileInfoWrappers(files.Concat(dirs));
+        }
+
+        /// <summary>
+        /// path の中に入っているファイルを詰め込んだリストを取得します。
+        /// </summary>
+        /// <param name="path">ディレクトリのパスを入力します</param>
+        /// <returns>入力されたパスのディレクトリの中にあるファイルのリストです。ディレクトリは含まれません。ディレクトリへのアクセスが失敗した場合は空のリストを返します。</returns>
+        private List<FileInfoWrapper> GetFiles(string path)
+        {
+            try
+            {
+                return Directory.GetFiles(path)
+                    .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }).ToList();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Message = $"{CurrentDirectoryPath} へのアクセスに失敗しました";
+                Debug.WriteLine(e);
+                return new List<FileInfoWrapper>();
+            }
+        }
+
+        /// <summary>
+        /// path の中に入っているディレクトリを詰め込んだリストを取得します。
+        /// </summary>
+        /// <param name="path">ディレクトリのパスを入力します</param>
+        /// <returns>入力されたパスのディレクトリの中にあるディレクトリのリストです。ファイルは含まれません。ディレクトリへのアクセスが失敗した場合は空のリストを返します。</returns>
+        private IEnumerable<FileInfoWrapper> GetDirectories(string path)
+        {
+            try
+            {
+                return Directory.GetDirectories(path)
+                    .Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), });
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Message = $"{CurrentDirectoryPath} へのアクセスに失敗しました";
+                Debug.WriteLine(e);
+                return new List<FileInfoWrapper>();
+            }
+        }
+
+        private bool IsM3U(string path)
+        {
+            return !string.IsNullOrWhiteSpace(path) && Path.GetExtension(path).StartsWith(".m3u", StringComparison.OrdinalIgnoreCase);
         }
 
         [Conditional("DEBUG")]

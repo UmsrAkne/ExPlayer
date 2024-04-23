@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
@@ -32,6 +33,7 @@ namespace ExPlayer.Models
                     _ => ParentDirectoryPath,
                 };
 
+                IsM3U = value.Extension.StartsWith(".m3u", StringComparison.OrdinalIgnoreCase);
                 fileSystemInfo = value;
             }
         }
@@ -40,7 +42,10 @@ namespace ExPlayer.Models
         public string Name { get; set; } = string.Empty;
 
         [NotMapped]
-        public bool IsDirectory => FileSystemInfo is DirectoryInfo;
+        public bool IsDirectory => FileSystemInfo is DirectoryInfo || IsM3U;
+
+        [NotMapped]
+        public bool IsM3U { get; private init; }
 
         [NotMapped]
         public int Index { get => index; set => SetProperty(ref index, value); }
