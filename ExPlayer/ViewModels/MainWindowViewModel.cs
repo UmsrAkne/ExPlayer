@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -241,11 +242,30 @@ namespace ExPlayer.ViewModels
                 OpenDateTime = DateTime.Now,
             });
 
-            var files = Directory.GetFiles(path)
-                .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }).ToList();
+            var files = new List<FileInfoWrapper>();
+            IEnumerable<FileInfoWrapper> dirs = new List<FileInfoWrapper>();
 
-            var dirs = Directory.GetDirectories(path)
-                .Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), });
+            try
+            {
+                files = Directory.GetFiles(path)
+                    .Select(f => new FileInfoWrapper() { FileSystemInfo = new FileInfo(f), }).ToList();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Message = $"{CurrentDirectoryPath} へのアクセスに失敗しました";
+                Debug.WriteLine(e);
+            }
+
+            try
+            {
+                dirs = Directory.GetDirectories(path)
+                    .Select(d => new FileInfoWrapper() { FileSystemInfo = new DirectoryInfo(d), });
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Message = $"{CurrentDirectoryPath} へのアクセスに失敗しました";
+                Debug.WriteLine(e);
+            }
 
             // 視聴回数を入力する処理
             // 作業ディレクトリのファイルリストと、現在のディレクトリパスで検索したファイルリストを辞書化する。
