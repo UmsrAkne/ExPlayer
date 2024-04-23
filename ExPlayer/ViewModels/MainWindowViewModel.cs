@@ -125,7 +125,7 @@ namespace ExPlayer.ViewModels
 
         public DelegateCommand JumpToDirectoryCommand => new DelegateCommand(() =>
         {
-            if (Directory.Exists(CurrentDirectoryPath))
+            if (Directory.Exists(CurrentDirectoryPath) || IsM3U(CurrentDirectoryPath))
             {
                 MoveDirectory(CurrentDirectoryPath);
             }
@@ -240,7 +240,7 @@ namespace ExPlayer.ViewModels
                 FullName = Directory.Exists(path) ? new DirectoryInfo(path).FullName : path,
             });
 
-            var pathIsM3UFile = path != null && new FileInfo(path).Extension.StartsWith(".m3u", StringComparison.OrdinalIgnoreCase);
+            var pathIsM3UFile = IsM3U(path);
             var files = pathIsM3UFile ? M3UFileReader.GetFilesFrom(path) : GetFiles(path);
             var dirs = !pathIsM3UFile ? GetDirectories(path) : new List<FileInfoWrapper>();
 
@@ -309,6 +309,11 @@ namespace ExPlayer.ViewModels
                 Debug.WriteLine(e);
                 return new List<FileInfoWrapper>();
             }
+        }
+
+        private bool IsM3U(string path)
+        {
+            return !string.IsNullOrWhiteSpace(path) && Path.GetExtension(path).StartsWith(".m3u", StringComparison.OrdinalIgnoreCase);
         }
 
         [Conditional("DEBUG")]
