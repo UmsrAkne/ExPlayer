@@ -86,7 +86,7 @@ namespace ExPlayer.ViewModels
 
         public FileListViewModel FileListViewModel { get; set; }
 
-        public string Message { get => message; set => SetProperty(ref message, value); }
+        public string Message { get => message; private set => SetProperty(ref message, value); }
 
         public DelegateCommand OpenCommand => new DelegateCommand(() =>
         {
