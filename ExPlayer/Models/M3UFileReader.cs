@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ExPlayer.Models
 {
-    public class M3UFileReader
+    public static class M3UFileReader
     {
         public static List<FileInfoWrapper> GetFilesFrom(string m3UFilePath)
         {
