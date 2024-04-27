@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ExPlayer.Models;
-using Prism.Commands;
 using Prism.Mvvm;
 
 namespace ExPlayer.ViewModels
