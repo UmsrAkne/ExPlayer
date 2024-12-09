@@ -15,7 +15,6 @@ namespace ExPlayer.ViewModels
     {
         private readonly DatabaseContext databaseContext;
         private readonly DispatcherTimer timer;
-        private string title = "ExPlayer";
         private string currentDirectoryPath;
         private long playbackPosition;
         private string message;
@@ -64,7 +63,7 @@ namespace ExPlayer.ViewModels
             timer.Start();
         }
 
-        public string Title { get => title; set => SetProperty(ref title, value); }
+        public TextWrapper Title { get; } = new ();
 
         public string CurrentDirectoryPath
         {
